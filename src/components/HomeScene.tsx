@@ -52,12 +52,12 @@ export default function HomeScene({ player }: { player: string }) {
   const treeScale = 0.7 + (state?.tree_level ?? 1) * 0.03;
   const dogHappy = (state?.dog_happiness ?? 100) >= 60;
 
-  if (loading) return <div className="flex-1 flex items-center justify-center text-pink-300 text-lg">กำลังโหลด...</div>;
+  if (loading) return <div className="flex-1 flex items-center justify-center text-lg" style={{ color: "var(--teal)" }}>กำลังโหลด...</div>;
 
   return (
     <div className="flex flex-col flex-1 relative select-none">
       {toast && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 bg-white border border-pink-100 rounded-full px-5 py-2 text-sm text-pink-500 font-semibold shadow-sm animate-bounce">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 bg-white rounded-full px-5 py-2 text-sm font-semibold shadow-sm animate-bounce" style={{ color: "var(--teal-dark)", border: "1px solid var(--teal-light)" }}>
           {toast}
         </div>
       )}
@@ -193,27 +193,25 @@ export default function HomeScene({ player }: { player: string }) {
       </div>
 
       {/* Action buttons */}
-      <div className="bg-white border-t border-pink-100 px-4 py-3 flex gap-3">
+      <div className="bg-white px-4 py-3 flex gap-3" style={{ borderTop: "1px solid var(--teal-light)" }}>
         <button
           onClick={() => doAction("water")}
-          className={`flex-1 py-3 rounded-2xl font-semibold text-sm transition-all ${
-            wateredToday
-              ? "bg-green-100 text-green-400 cursor-default"
-              : "bg-green-400 text-white active:scale-95"
-          }`}
+          className="flex-1 py-3 rounded-2xl font-semibold text-sm transition-all active:scale-95"
+          style={wateredToday
+            ? { background: "var(--teal-light)", color: "var(--teal)", cursor: "default" }
+            : { background: "var(--teal)", color: "white" }}
         >
-          {wateredToday ? `✅ รดน้ำแล้ว` : "💧 รดน้ำต้นไม้"}
+          {wateredToday ? "✅ รดน้ำแล้ว" : "💧 รดน้ำต้นไม้"}
           {state?.watered_by && wateredToday && <span className="text-xs block font-normal">โดย {state.watered_by}</span>}
         </button>
         <button
           onClick={() => doAction("feed")}
-          className={`flex-1 py-3 rounded-2xl font-semibold text-sm transition-all ${
-            fedToday
-              ? "bg-amber-100 text-amber-400 cursor-default"
-              : "bg-amber-400 text-white active:scale-95"
-          }`}
+          className="flex-1 py-3 rounded-2xl font-semibold text-sm transition-all active:scale-95"
+          style={fedToday
+            ? { background: "#FFF5E6", color: "var(--beige)", cursor: "default" }
+            : { background: "var(--beige)", color: "white" }}
         >
-          {fedToday ? `✅ ให้อาหารแล้ว` : "🦴 ให้อาหารหมา"}
+          {fedToday ? "✅ ให้อาหารแล้ว" : "🦴 ให้อาหารหมา"}
           {state?.fed_by && fedToday && <span className="text-xs block font-normal">โดย {state.fed_by}</span>}
         </button>
       </div>
