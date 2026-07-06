@@ -1,57 +1,86 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import HomeScene from "@/components/HomeScene";
 import SpinWheel from "@/components/SpinWheel";
+import Anniversary from "@/components/Anniversary";
 
-const START_DATE = new Date("2025-10-16");
+type Tab = "home" | "spin" | "us";
 
-function getDays() {
-  const now = new Date();
-  return Math.floor((now.getTime() - START_DATE.getTime()) / 86400000);
-}
-
-function getDaysToAnniversary() {
-  const now = new Date();
-  const next = new Date(START_DATE);
-  next.setFullYear(now.getFullYear());
-  if (next <= now) next.setFullYear(now.getFullYear() + 1);
-  return Math.ceil((next.getTime() - now.getTime()) / 86400000);
-}
-
-export default function Home() {
-  const [days, setDays] = useState(0);
-  const [daysLeft, setDaysLeft] = useState(0);
+export default function Page() {
+  const [tab, setTab] = useState<Tab>("home");
+  const [player, setPlayer] = useState<string>("");
+  const [showPlayerModal, setShowPlayerModal] = useState(false);
 
   useEffect(() => {
-    setDays(getDays());
-    setDaysLeft(getDaysToAnniversary());
-    const t = setInterval(() => {
-      setDays(getDays());
-      setDaysLeft(getDaysToAnniversary());
-    }, 60000);
-    return () => clearInterval(t);
+    const saved = localStorage.getItem("foxy_player");
+    if (saved) setPlayer(saved);
+    else setShowPlayerModal(true);
   }, []);
 
+  function choosePlayer(name: string) {
+    localStorage.setItem("foxy_player", name);
+    setPlayer(name);
+    setShowPlayerModal(false);
+  }
+
   return (
-    <main className="min-h-screen bg-pink-50 flex flex-col items-center px-4 py-12 gap-8">
-      <div className="text-center">
-        <p className="text-pink-300 text-sm tracking-widest mb-2">🦊 16 ต.ค. 2568</p>
-        <p className="text-8xl font-bold text-pink-500">{days}</p>
-        <p className="text-pink-400 mt-2 text-lg">วันที่อยู่ด้วยกัน</p>
-      </div>
+    <div className="min-h-screen flex flex-col bg-pink-50 max-w-lg mx-auto relative">
+      {/* Player modal */}
+      {showPlayerModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="bg-white rounded-3xl p-8 mx-6 text-center shadow-lg">
+            <div className="text-5xl mb-4">🦊</div>
+            <h2 className="text-xl font-bold text-gray-700 mb-2">สวัสดี!</h2>
+            <p className="text-gray-400 text-sm mb-6">คุณคือใคร?</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => choosePlayer("เรา")}
+                className="flex-1 bg-pink-400 text-white font-semibold py-3 rounded-2xl active:scale-95 transition-all"
+              >
+                เรา 🧡
+              </button>
+              <button
+                onClick={() => choosePlayer("แฟน")}
+                className="flex-1 bg-purple-400 text-white font-semibold py-3 rounded-2xl active:scale-95 transition-all"
+              >
+                แฟน 💜
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-      <div className="bg-white rounded-2xl border border-pink-100 px-8 py-5 text-center w-full max-w-xs">
-        <p className="text-gray-400 text-sm mb-1">ครบรอบปีถัดไป</p>
-        {daysLeft === 0 ? (
-          <p className="text-2xl font-semibold text-pink-500">🎉 วันนี้เลย!</p>
-        ) : (
-          <p className="text-2xl font-semibold text-gray-700">
-            อีก <span className="text-pink-500">{daysLeft}</span> วัน
-          </p>
+      {/* Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {tab === "home" && player && <HomeScene player={player} />}
+        {tab === "spin" && (
+          <div className="flex-1 overflow-y-auto py-8 px-4 flex flex-col items-center">
+            <SpinWheel />
+          </div>
         )}
+        {tab === "us" && <Anniversary />}
       </div>
 
-      <SpinWheel />
-    </main>
+      {/* Bottom nav */}
+      <nav className="bg-white border-t border-pink-100 flex safe-area-pb">
+        {(["home", "spin", "us"] as Tab[]).map((t) => {
+          const icons: Record<Tab, string> = { home: "🏠", spin: "🎡", us: "🦊" };
+          const labels: Record<Tab, string> = { home: "บ้าน", spin: "กินอะไร", us: "เรา" };
+          return (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`flex-1 py-3 flex flex-col items-center gap-0.5 transition-colors ${
+                tab === t ? "text-pink-500" : "text-gray-300"
+              }`}
+            >
+              <span className="text-xl">{icons[t]}</span>
+              <span className="text-xs font-medium">{labels[t]}</span>
+            </button>
+          );
+        })}
+      </nav>
+    </div>
   );
 }
