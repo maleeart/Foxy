@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase, GameState } from "@/lib/supabase";
+import { getSupabase, GameState } from "@/lib/supabase";
 
 const TODAY = new Date().toISOString().slice(0, 10);
 
@@ -12,17 +12,17 @@ export default function HomeScene({ player }: { player: string }) {
 
   useEffect(() => {
     fetchState();
-    const sub = supabase
+    const sub = getSupabase()
       .channel("game")
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "game_state" }, (p) => {
         setState(p.new as GameState);
       })
       .subscribe();
-    return () => { supabase.removeChannel(sub); };
+    return () => { getSupabase().removeChannel(sub); };
   }, []);
 
   async function fetchState() {
-    const { data } = await supabase.from("game_state").select("*").eq("id", 1).single();
+    const { data } = await getSupabase().from("game_state").select("*").eq("id", 1).single();
     setState(data);
     setLoading(false);
   }
@@ -37,7 +37,7 @@ export default function HomeScene({ player }: { player: string }) {
       ? { watered_by: player, watered_at: TODAY, tree_level: Math.min(state.tree_level + 1, 10) }
       : { fed_by: player, fed_at: TODAY, dog_happiness: Math.min(state.dog_happiness + 10, 100) };
 
-    const { data } = await supabase.from("game_state").update(update).eq("id", 1).select().single();
+    const { data } = await getSupabase().from("game_state").update(update).eq("id", 1).select().single();
     if (data) setState(data);
     showToast(isWater ? "🌳 รดน้ำต้นไม้แล้ว!" : "🐾 ให้อาหารหมาแล้ว!");
   }
