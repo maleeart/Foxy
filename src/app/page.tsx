@@ -8,7 +8,7 @@ import Anniversary from "@/components/Anniversary";
 
 type Tab = "home" | "spin" | "us";
 
-function BeagleSVG() {
+function _BeagleSVG_unused() {
   return (
     <svg viewBox="0 0 80 80" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
       {/* body */}
@@ -48,7 +48,7 @@ function BeagleSVG() {
   );
 }
 
-function GoldenSVG() {
+function _GoldenSVG_unused() {
   return (
     <svg viewBox="0 0 80 80" width="72" height="72" xmlns="http://www.w3.org/2000/svg">
       {/* body - chubby */}
@@ -130,7 +130,7 @@ export default function Page() {
                 className="flex-1 flex flex-col items-center gap-2 rounded-2xl py-4 px-2 border-2 transition-all active:scale-95"
                 style={{ borderColor: "var(--teal)", background: "var(--teal-light)" }}
               >
-                <BeagleSVG />
+                <Image src="/beagle.png" alt="หมาน้อย" width={90} height={90} className="object-contain" />
                 <span className="text-sm font-bold" style={{ color: "var(--teal-dark)" }}>หมาน้อย</span>
               </button>
               <button
@@ -139,7 +139,7 @@ export default function Page() {
                 className="flex-1 flex flex-col items-center gap-2 rounded-2xl py-4 px-2 border-2 transition-all active:scale-95"
                 style={{ borderColor: "var(--beige)", background: "#FFF8F0" }}
               >
-                <GoldenSVG />
+                <Image src="/golden.png" alt="หมาแก่" width={90} height={90} className="object-contain" />
                 <span className="text-sm font-bold" style={{ color: "#9A7050" }}>หมาแก่</span>
               </button>
             </div>
