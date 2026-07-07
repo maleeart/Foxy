@@ -59,7 +59,7 @@ export default function HomeScene({ player }: { player: string }) {
   );
 
   return (
-    <div className="flex flex-col flex-1 relative select-none overflow-hidden">
+    <div className="flex flex-col relative select-none" style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
       {toast && (
         <div className="toast-anim absolute top-4 left-1/2 z-20 bg-white rounded-full px-5 py-2.5 text-sm font-bold shadow-lg"
           style={{ color: "var(--teal-dark)", border: "1.5px solid var(--teal-mid)", whiteSpace: "nowrap" }}>
@@ -68,8 +68,8 @@ export default function HomeScene({ player }: { player: string }) {
       )}
 
       {/* Scene */}
-      <div className="flex-1 relative">
-        <svg viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg" className="w-full h-full" style={{ display: "block" }}>
+      <div className="relative" style={{ flex: 1, minHeight: 0 }}>
+        <svg viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg" style={{ display: "block", width: "100%", height: "100%", position: "absolute", inset: 0 }}>
           <defs>
             <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#87CEEB"/>

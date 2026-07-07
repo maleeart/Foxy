@@ -39,7 +39,7 @@ export default function Page() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col max-w-lg mx-auto relative" style={{ background: "var(--teal-light)" }}>
+    <div className="flex flex-col max-w-lg mx-auto relative" style={{ background: "var(--teal-light)", height: "100dvh" }}>
 
       {/* Player modal */}
       {showPlayerModal && (
@@ -90,7 +90,7 @@ export default function Page() {
       </header>
 
       {/* Content */}
-      <div key={tabKey} className="flex-1 flex flex-col overflow-hidden tab-enter">
+      <div key={tabKey} className="flex-1 flex flex-col tab-enter" style={{ overflow: "hidden", minHeight: 0 }}>
         {tab === "home" && player && <HomeScene player={player} />}
         {tab === "spin" && (
           <div className="flex-1 overflow-y-auto py-6 px-4 flex flex-col items-center gap-4">
