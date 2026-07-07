@@ -2,16 +2,68 @@
 
 :root {
   --teal: #4DC5BE;
-  --teal-light: #E6F8F7;
-  --teal-dark: #3AA39D;
+  --teal-light: #E8F8F7;
+  --teal-mid: #B2E8E5;
+  --teal-dark: #2FA89F;
   --beige: #C8A882;
-  --beige-light: #F5EFE6;
+  --beige-light: #FFF8F0;
 }
 
-* {
-  -webkit-tap-highlight-color: transparent;
+* { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+
+body { background: var(--teal-light); }
+
+/* Tab fade-slide transition */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.tab-enter { animation: fadeUp 0.28s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* Scene animations */
+@keyframes cloudDrift {
+  0%,100% { transform: translateX(0); }
+  50%      { transform: translateX(12px); }
+}
+@keyframes treeSway {
+  0%,100% { transform: rotate(-2deg); }
+  50%      { transform: rotate(2deg); }
+}
+@keyframes tailWag {
+  0%,100% { transform: rotate(-25deg); }
+  50%      { transform: rotate(15deg); }
+}
+@keyframes dogBob {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+@keyframes smokeRise {
+  0%   { opacity: 0.7; transform: translateY(0) scale(0.8); }
+  100% { opacity: 0;   transform: translateY(-24px) scale(1.5); }
+}
+@keyframes sunPulse {
+  0%,100% { r: 32; }
+  50%      { r: 34; }
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-8px) scale(0.95); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+@keyframes bounce {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-4px); }
+}
+@keyframes pressScale {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
 }
 
-body {
-  background: var(--teal-light);
-}
+.cloud-1 { animation: cloudDrift 8s ease-in-out infinite; }
+.cloud-2 { animation: cloudDrift 11s ease-in-out infinite 2s; }
+.tree-sway { animation: treeSway 4s ease-in-out infinite; transform-origin: 50% 100%; }
+.tail-wag  { animation: tailWag 0.6s ease-in-out infinite; }
+.dog-bob   { animation: dogBob 2.5s ease-in-out infinite; }
+.smoke-1   { animation: smokeRise 2.4s ease-out infinite; }
+.smoke-2   { animation: smokeRise 2.4s ease-out infinite 0.9s; }
+.toast-anim { animation: toastIn 0.2s ease-out both, bounce 1.2s ease-in-out 0.2s infinite; }
