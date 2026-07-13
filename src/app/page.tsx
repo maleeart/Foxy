@@ -39,7 +39,7 @@ export default function Page() {
   ];
 
   return (
-    <div className="flex flex-col max-w-lg mx-auto relative" style={{ background: "var(--teal-light)", height: "100dvh" }}>
+    <div className="flex flex-col w-full relative" style={{ background: "var(--teal-light)", height: "100dvh" }}>
 
       {/* Player modal */}
       {showPlayerModal && (

@@ -53,12 +53,21 @@ export default function Anniversary() {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border px-6 py-4 w-full max-w-xs text-center" style={{ borderColor: "#D0EFED" }}>
-        <p className="text-gray-400 text-xs mb-2">ใน {stats.days} วันที่ผ่านมา...</p>
-        <div className="flex flex-col gap-1 text-sm text-gray-600">
-          <p>😴 นอนหลับราว <span className="font-semibold" style={{ color: "var(--teal-dark)" }}>{(stats.days * 8).toLocaleString()}</span> ชม.</p>
-          <p>🍚 กินข้าวด้วยกันราว <span className="font-semibold" style={{ color: "var(--teal-dark)" }}>{(stats.days * 2).toLocaleString()}</span> มื้อ</p>
-          <p>🐰 บอกรักกันไปแล้ว <span className="font-semibold" style={{ color: "var(--teal-dark)" }}>∞</span> ครั้ง</p>
+      <div className="bg-white rounded-2xl border px-6 py-4 w-full max-w-xs" style={{ borderColor: "#D0EFED" }}>
+        <p className="text-gray-400 text-xs mb-3 text-center">ใน {stats.days} วันที่ผ่านมา...</p>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">🦷 งับแขนไปแล้ว</span>
+            <span className="font-bold text-base" style={{ color: "var(--teal-dark)" }}>{(stats.days * 2).toLocaleString()} ครั้ง</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">💋 จุ๊บไปแล้ว</span>
+            <span className="font-bold text-base" style={{ color: "var(--teal-dark)" }}>{(stats.days * 5).toLocaleString()} ครั้ง</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">🥰 ชิพๆไปแล้ว</span>
+            <span className="font-bold text-base" style={{ color: "var(--teal-dark)" }}>∞ ครั้ง</span>
+          </div>
         </div>
       </div>
     </div>
