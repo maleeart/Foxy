@@ -92,6 +92,15 @@ export default function HomeScene({ player }: { player: string }) {
     </div>
   );
 
+  if (!state) return (
+    <div className="flex-1 flex flex-col items-center justify-center gap-3 px-6 text-center">
+      <p className="text-2xl">⚠️</p>
+      <p className="text-sm font-bold text-red-500">ไม่สามารถโหลดข้อมูลได้</p>
+      <p className="text-xs text-gray-400">URL: {process.env.NEXT_PUBLIC_SUPABASE_URL ?? "undefined"}</p>
+      <button onClick={fetchState} className="mt-2 px-4 py-2 rounded-xl text-white text-sm" style={{background:"var(--teal)"}}>ลองใหม่</button>
+    </div>
+  );
+
   return (
     <div className="flex flex-col relative select-none" style={{ flex: 1, minHeight: 0, overflow: "hidden", width: "100%" }}>
       {toast && (
