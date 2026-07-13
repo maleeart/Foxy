@@ -106,64 +106,17 @@ export default function HomeScene({ player }: { player: string }) {
             <text x="0" y="168" textAnchor="middle" fontSize="11" fontFamily="sans-serif" fill="#4CAF50" fontWeight="bold">🌳 Lv.{lv}</text>
           </g>
 
-          {/* ===== HOUSE ===== */}
-          <g transform="translate(130,254)">
-            {/* shadow */}
-            <ellipse cx="60" cy="202" rx="78" ry="10" fill="#4A9A44" opacity="0.25"/>
-            {/* body */}
-            <rect x="0" y="95" width="120" height="107" rx="8" fill="#FFF5DC"/>
-            <rect x="0" y="95" width="120" height="107" rx="8" fill="none" stroke="#EACC6A" strokeWidth="3"/>
-            {/* roof */}
-            <polygon points="60,2 -18,95 138,95" fill="#FF7070"/>
-            <polygon points="60,2 -18,95 138,95" fill="none" stroke="#E05555" strokeWidth="3"/>
-            {/* chimney */}
-            <rect x="86" y="-30" width="22" height="40" rx="5" fill="#CC5555"/>
-            <rect x="82" y="-36" width="30" height="10" rx="5" fill="#CC5555"/>
-            <circle cx="97" cy="-50" r="8" fill="#DDD" opacity="0.6" className="smoke-1"/>
-            <circle cx="93" cy="-68" r="6" fill="#DDD" opacity="0.4" className="smoke-2"/>
-            {/* windows */}
-            <rect x="10" y="114" width="36" height="32" rx="7" fill="#C5E8F5"/>
-            <rect x="10" y="114" width="36" height="32" rx="7" fill="none" stroke="#EACC6A" strokeWidth="2"/>
-            <line x1="28" y1="114" x2="28" y2="146" stroke="#EACC6A" strokeWidth="1.5"/>
-            <line x1="10" y1="130" x2="46" y2="130" stroke="#EACC6A" strokeWidth="1.5"/>
-            {/* curtain left */}
-            <path d="M10,114 Q18,128 10,146" fill="#FFB3CC" opacity="0.45"/>
-            <path d="M46,114 Q38,128 46,146" fill="#FFB3CC" opacity="0.45"/>
-            <rect x="74" y="114" width="36" height="32" rx="7" fill="#C5E8F5"/>
-            <rect x="74" y="114" width="36" height="32" rx="7" fill="none" stroke="#EACC6A" strokeWidth="2"/>
-            <line x1="92" y1="114" x2="92" y2="146" stroke="#EACC6A" strokeWidth="1.5"/>
-            <line x1="74" y1="130" x2="110" y2="130" stroke="#EACC6A" strokeWidth="1.5"/>
-            <path d="M74,114 Q82,128 74,146" fill="#FFB3CC" opacity="0.45"/>
-            <path d="M110,114 Q102,128 110,146" fill="#FFB3CC" opacity="0.45"/>
-            {/* door */}
-            <rect x="42" y="156" width="36" height="46" rx="18" fill="#C8916B"/>
-            <rect x="42" y="156" width="36" height="46" rx="18" fill="none" stroke="#A07050" strokeWidth="2.5"/>
-            <circle cx="74" cy="181" r="4" fill="#FFD700"/>
-            {/* label */}
-            <rect x="-8" y="208" width="136" height="24" rx="12" fill="white" opacity="0.92"/>
-            <text x="60" y="224" textAnchor="middle" fontSize="11" fontFamily="sans-serif" fill="#E07070" fontWeight="bold">🏠 บ้านของเรา</text>
-          </g>
-
-          {/* Flowers */}
-          {[[80,432,"#FF9ECA"],[95,440,"#C39BD3"],[355,434,"#FFB347"],[370,442,"#FF9ECA"]].map(([x,y,c],i) => (
-            <g key={i} transform={`translate(${x},${y})`}>
-              <rect x="-1.5" y="-24" width="3" height="24" rx="2" fill="#4CAF50"/>
-              <circle cx="0" cy="-28" r="8" fill={c as string}/>
-              <circle cx="0" cy="-28" r="4" fill="#FFE566"/>
-            </g>
-          ))}
-
-          {/* ===== DOGS (beagle left, golden right) ===== */}
+          {/* ===== DOGS (center, large) ===== */}
           <g className="dog-bob" style={{ mixBlendMode: "multiply" }}>
-            <image href="/beagle.png" x="248" y="380" width="90" height="90" preserveAspectRatio="xMidYMid meet"/>
+            <image href="/beagle.png" x="60" y="300" width="150" height="150" preserveAspectRatio="xMidYMid meet"/>
           </g>
           <g className="dog-bob" style={{ mixBlendMode: "multiply", animationDelay: "0.4s" }}>
-            <image href="/golden.png" x="310" y="375" width="90" height="90" preserveAspectRatio="xMidYMid meet"/>
+            <image href="/golden.png" x="200" y="290" width="150" height="150" preserveAspectRatio="xMidYMid meet"/>
           </g>
-          {!dogHappy && <text x="330" y="372" textAnchor="middle" fontSize="18">😢</text>}
+          {!dogHappy && <text x="195" y="285" textAnchor="middle" fontSize="22">😢</text>}
           {/* happiness label */}
-          <rect x="256" y="468" width="90" height="22" rx="11" fill="white" opacity="0.92"/>
-          <text x="301" y="483" textAnchor="middle" fontSize="11" fontFamily="sans-serif" fill="#C4996A" fontWeight="bold">🐾 {state?.dog_happiness ?? 100}%</text>
+          <rect x="142" y="460" width="106" height="24" rx="12" fill="white" opacity="0.92"/>
+          <text x="195" y="476" textAnchor="middle" fontSize="12" fontFamily="sans-serif" fill="#C4996A" fontWeight="bold">🐾 {state?.dog_happiness ?? 100}%</text>
         </svg>
       </div>
 
