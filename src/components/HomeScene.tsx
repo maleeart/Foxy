@@ -59,7 +59,7 @@ export default function HomeScene({ player }: { player: string }) {
   );
 
   return (
-    <div className="flex flex-col relative select-none" style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+    <div className="flex flex-col relative select-none" style={{ flex: 1, minHeight: 0, overflow: "hidden", width: "100%" }}>
       {toast && (
         <div className="toast-anim absolute top-4 left-1/2 z-20 bg-white rounded-full px-5 py-2.5 text-sm font-bold shadow-lg"
           style={{ color: "var(--teal-dark)", border: "1.5px solid var(--teal-mid)", whiteSpace: "nowrap" }}>
@@ -68,7 +68,7 @@ export default function HomeScene({ player }: { player: string }) {
       )}
 
       {/* Scene — portrait viewBox 390×560 */}
-      <div className="relative" style={{ flex: 1, minHeight: 0 }}>
+      <div className="relative" style={{ flex: 1, minHeight: 0, width: "100%" }}>
         <svg viewBox="0 0 390 560" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style={{ display: "block", width: "100%", height: "100%", position: "absolute", inset: 0 }}>
           <defs>
             <linearGradient id="groundGrad" x1="0" y1="0" x2="0" y2="1">
