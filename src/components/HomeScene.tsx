@@ -48,9 +48,10 @@ export default function HomeScene({ player }: { player: string }) {
     const h = hoursSince(state.fed_at_1);
     if (h < 6) { showToast(`ยังไม่หิว อีก ${Math.ceil(6 - h)} ชม. นะ 😊`); return; }
     const now = new Date().toISOString();
-    const { data } = await getSupabase().from("game_state")
+    const { data, error } = await getSupabase().from("game_state")
       .update({ fed_at_2: state.fed_at_1, fed_at_1: now, dog_happiness: Math.min(state.dog_happiness + 25, 100) })
       .eq("id", 1).select().single();
+    if (error) { showToast("เกิดข้อผิดพลาด 😢"); console.error("feed error:", error); return; }
     if (data) setState(data);
     showToast("🦴 อร่อยมาก! +25");
   }
@@ -63,9 +64,10 @@ export default function HomeScene({ player }: { player: string }) {
     const h = hoursSince(state.play_at_1);
     if (h < 6) { showToast("สนุกจัง! ✨"); return; }
     const now = new Date().toISOString();
-    const { data } = await getSupabase().from("game_state")
+    const { data, error } = await getSupabase().from("game_state")
       .update({ play_at_2: state.play_at_1, play_at_1: now, dog_happiness: Math.min(state.dog_happiness + 10, 100) })
       .eq("id", 1).select().single();
+    if (error) { showToast("เกิดข้อผิดพลาด 😢"); console.error("play error:", error); return; }
     if (data) setState(data);
     showToast("🎾 หมาสนุกมาก! +10");
   }
@@ -80,8 +82,6 @@ export default function HomeScene({ player }: { player: string }) {
     setTimeout(() => setToast(""), 2800);
   }
 
-  const treeScale = 0.7 + (state?.tree_level ?? 1) * 0.03;
-  const lv = state?.tree_level ?? 1;
   const happiness = state ? calcHappiness(state) : 100;
   const dogHappy = happiness >= 40;
 
@@ -114,30 +114,13 @@ export default function HomeScene({ player }: { player: string }) {
           {/* Background image */}
           <image href="/bg.png" x="0" y="0" width="390" height="560" preserveAspectRatio="xMidYMid slice"/>
 
-          {/* ===== TREE ===== */}
-          <g transform={`translate(55,${321 - lv * 3})`}>
-            {/* trunk */}
-            <rect x="-11" y="82" width="22" height="62" rx="9" fill="#9B7240"/>
-            <rect x="-5" y="90" width="5" height="28" rx="3" fill="#B8904A" opacity="0.4"/>
-            {/* foliage animated */}
-            <g className="tree-sway" style={{ transformOrigin: "0px 82px" }}>
-              <g style={{ transform: `scale(${treeScale})`, transformOrigin: "0px 82px" }}>
-                <ellipse cx="0" cy="58" rx="58" ry="52" fill="#43A047"/>
-                <ellipse cx="0" cy="34" rx="46" ry="40" fill="#4CAF50"/>
-                <ellipse cx="0" cy="14" rx="33" ry="30" fill="#66BB6A"/>
-                <ellipse cx="0" cy="0" rx="20" ry="20" fill="#81C784"/>
-                {lv >= 3 && <><circle cx="-32" cy="50" r="9" fill="#E53935"/><circle cx="-30" cy="50" r="4" fill="#FF5252" opacity="0.6"/></>}
-                {lv >= 5 && <><circle cx="28" cy="44" r="8" fill="#FB8C00"/><circle cx="26" cy="44" r="4" fill="#FFA726" opacity="0.6"/></>}
-                {lv >= 7 && <><circle cx="6" cy="68" r="7" fill="#FDD835"/><circle cx="4" cy="67" r="3" fill="#FFEE58" opacity="0.6"/></>}
-                {/* face */}
-                <circle cx="-8" cy="40" r="3.5" fill="#2E7D32"/>
-                <circle cx="8" cy="40" r="3.5" fill="#2E7D32"/>
-                <path d="M-5,49 Q0,54 5,49" stroke="#2E7D32" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
-              </g>
-            </g>
-            {/* label */}
-            <rect x="-42" y="152" width="84" height="24" rx="12" fill="white" opacity="0.92"/>
-            <text x="0" y="168" textAnchor="middle" fontSize="11" fontFamily="sans-serif" fill="#4CAF50" fontWeight="bold">🌳 Lv.{lv}</text>
+          {/* ===== TREE (decoration) ===== */}
+          <g transform="translate(55,318)" className="tree-sway" style={{ transformOrigin: "55px 318px" }}>
+            <rect x="-11" y="0" width="22" height="62" rx="9" fill="#9B7240"/>
+            <ellipse cx="0" cy="-24" rx="48" ry="44" fill="#43A047"/>
+            <ellipse cx="0" cy="-44" rx="38" ry="34" fill="#4CAF50"/>
+            <ellipse cx="0" cy="-60" rx="26" ry="24" fill="#66BB6A"/>
+            <ellipse cx="0" cy="-74" rx="16" ry="16" fill="#81C784"/>
           </g>
 
           {/* ===== DOGS (center, large) ===== */}
