@@ -57,7 +57,7 @@ export default function Anniversary() {
         <p className="text-gray-400 text-xs mb-3 text-center">ใน {stats.days} วันที่ผ่านมา...</p>
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">🦷 งับแขนไปแล้ว</span>
+            <span className="text-sm text-gray-600">🧛 งับแขนไปแล้ว</span>
             <span className="font-bold text-base" style={{ color: "var(--teal-dark)" }}>{(stats.days * 2).toLocaleString()} ครั้ง</span>
           </div>
           <div className="flex items-center justify-between">
