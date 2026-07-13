@@ -3,12 +3,26 @@
 import { useEffect, useState } from "react";
 import { getSupabase, GameState } from "@/lib/supabase";
 
-const TODAY = new Date().toISOString().slice(0, 10);
+function hoursSince(ts: string | null) {
+  if (!ts) return 999;
+  return (Date.now() - new Date(ts).getTime()) / 3_600_000;
+}
+
+function todayCount(...timestamps: (string | null)[]) {
+  const today = new Date().toISOString().slice(0, 10);
+  return timestamps.filter(ts => ts?.slice(0, 10) === today).length;
+}
+
+function calcHappiness(state: GameState) {
+  const decay = Math.max(0, Math.floor(hoursSince(state.fed_at_1) / 24) - 0) * 20;
+  return Math.max(0, Math.min(100, state.dog_happiness - decay));
+}
 
 export default function HomeScene({ player }: { player: string }) {
   const [state, setState] = useState<GameState | null>(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState("");
+  const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     fetchState();
@@ -27,17 +41,38 @@ export default function HomeScene({ player }: { player: string }) {
     setLoading(false);
   }
 
-  async function doAction(action: "water" | "feed") {
+  async function doFeed() {
     if (!state) return;
-    const isWater = action === "water";
-    const doneToday = isWater ? state.watered_at === TODAY : state.fed_at === TODAY;
-    if (doneToday) { showToast("ทำไปแล้ววันนี้ 😊"); return; }
-    const update = isWater
-      ? { watered_by: player, watered_at: TODAY, tree_level: Math.min(state.tree_level + 1, 10) }
-      : { fed_by: player, fed_at: TODAY, dog_happiness: Math.min(state.dog_happiness + 10, 100) };
-    const { data } = await getSupabase().from("game_state").update(update).eq("id", 1).select().single();
+    const fedToday = todayCount(state.fed_at_1, state.fed_at_2);
+    if (fedToday >= 2) { showToast("อิ่มแล้วสำหรับวันนี้ 🐾"); return; }
+    const h = hoursSince(state.fed_at_1);
+    if (h < 6) { showToast(`ยังไม่หิว อีก ${Math.ceil(6 - h)} ชม. นะ 😊`); return; }
+    const now = new Date().toISOString();
+    const { data } = await getSupabase().from("game_state")
+      .update({ fed_at_2: state.fed_at_1, fed_at_1: now, dog_happiness: Math.min(state.dog_happiness + 25, 100) })
+      .eq("id", 1).select().single();
     if (data) setState(data);
-    showToast(isWater ? "🌳 รดน้ำต้นไม้แล้ว!" : "🐾 ให้อาหารหมาแล้ว!");
+    showToast("🦴 อร่อยมาก! +25");
+  }
+
+  async function doPlay() {
+    if (!state) return;
+    triggerPlay();
+    const playedToday = todayCount(state.play_at_1, state.play_at_2);
+    if (playedToday >= 2) { showToast("เหนื่อยแล้ว เล่นพรุ่งนี้ต่อนะ 😴"); return; }
+    const h = hoursSince(state.play_at_1);
+    if (h < 6) { showToast("สนุกจัง! ✨"); return; }
+    const now = new Date().toISOString();
+    const { data } = await getSupabase().from("game_state")
+      .update({ play_at_2: state.play_at_1, play_at_1: now, dog_happiness: Math.min(state.dog_happiness + 10, 100) })
+      .eq("id", 1).select().single();
+    if (data) setState(data);
+    showToast("🎾 หมาสนุกมาก! +10");
+  }
+
+  function triggerPlay() {
+    setPlaying(true);
+    setTimeout(() => setPlaying(false), 1000);
   }
 
   function showToast(msg: string) {
@@ -45,11 +80,10 @@ export default function HomeScene({ player }: { player: string }) {
     setTimeout(() => setToast(""), 2800);
   }
 
-  const wateredToday = state?.watered_at === TODAY;
-  const fedToday = state?.fed_at === TODAY;
   const treeScale = 0.7 + (state?.tree_level ?? 1) * 0.03;
-  const dogHappy = (state?.dog_happiness ?? 100) >= 60;
   const lv = state?.tree_level ?? 1;
+  const happiness = state ? calcHappiness(state) : 100;
+  const dogHappy = happiness >= 40;
 
   if (loading) return (
     <div className="flex-1 flex flex-col items-center justify-center gap-3" style={{ color: "var(--teal)" }}>
@@ -107,44 +141,42 @@ export default function HomeScene({ player }: { player: string }) {
           </g>
 
           {/* ===== DOGS (center, large) ===== */}
-          <g className="dog-bob" style={{ mixBlendMode: "multiply" }}>
+          <g className={playing ? "dog-jump" : "dog-bob"} style={{ mixBlendMode: "multiply" }}>
             <image href="/beagle.png" x="60" y="300" width="150" height="150" preserveAspectRatio="xMidYMid meet"/>
           </g>
-          <g className="dog-bob" style={{ mixBlendMode: "multiply", animationDelay: "0.4s" }}>
+          <g className={playing ? "dog-jump" : "dog-bob"} style={{ mixBlendMode: "multiply", animationDelay: "0.4s" }}>
             <image href="/golden.png" x="200" y="290" width="150" height="150" preserveAspectRatio="xMidYMid meet"/>
           </g>
           {!dogHappy && <text x="195" y="285" textAnchor="middle" fontSize="22">😢</text>}
-          {/* happiness label */}
-          <rect x="142" y="460" width="106" height="24" rx="12" fill="white" opacity="0.92"/>
-          <text x="195" y="476" textAnchor="middle" fontSize="12" fontFamily="sans-serif" fill="#C4996A" fontWeight="bold">🐾 {state?.dog_happiness ?? 100}%</text>
+          {/* happiness bar */}
+          <rect x="95" y="462" width="200" height="14" rx="7" fill="white" opacity="0.7"/>
+          <rect x="95" y="462" width={200 * happiness / 100} height="14" rx="7"
+            fill={happiness >= 60 ? "#4DC5BE" : happiness >= 30 ? "#FFB347" : "#FF6B6B"}/>
+          <text x="195" y="490" textAnchor="middle" fontSize="11" fontFamily="sans-serif" fill="white" fontWeight="bold">🐾 {happiness}%</text>
         </svg>
       </div>
 
       {/* Action buttons */}
       <div className="bg-white px-4 py-4 flex gap-3" style={{ borderTop: "1.5px solid var(--teal-mid)" }}>
         <button
-          onClick={() => doAction("water")}
+          onClick={doFeed}
           className="flex-1 py-3.5 rounded-2xl font-bold text-sm transition-all active:scale-95"
-          style={wateredToday
-            ? { background: "var(--teal-light)", color: "var(--teal)", cursor: "default", border: "1.5px solid var(--teal-mid)" }
-            : { background: "var(--teal)", color: "white", boxShadow: "0 4px 12px rgba(77,197,190,0.35)" }}
+          style={{ background: "var(--beige)", color: "white", boxShadow: "0 4px 12px rgba(200,168,130,0.35)" }}
         >
-          {wateredToday ? "✅ รดน้ำแล้ว" : "💧 รดน้ำต้นไม้"}
-          {state?.watered_by && wateredToday && (
-            <span className="text-xs block font-normal mt-0.5" style={{ color: "var(--teal)" }}>โดย {state.watered_by}</span>
-          )}
+          🦴 ให้อาหาร
+          <span className="text-xs block font-normal mt-0.5 opacity-75">
+            {todayCount(state?.fed_at_1, state?.fed_at_2 ?? null)}/2 วันนี้
+          </span>
         </button>
         <button
-          onClick={() => doAction("feed")}
+          onClick={doPlay}
           className="flex-1 py-3.5 rounded-2xl font-bold text-sm transition-all active:scale-95"
-          style={fedToday
-            ? { background: "var(--beige-light)", color: "var(--beige)", cursor: "default", border: "1.5px solid #E8D5B8" }
-            : { background: "var(--beige)", color: "white", boxShadow: "0 4px 12px rgba(200,168,130,0.35)" }}
+          style={{ background: "var(--teal)", color: "white", boxShadow: "0 4px 12px rgba(77,197,190,0.35)" }}
         >
-          {fedToday ? "✅ ให้อาหารแล้ว" : "🦴 ให้อาหารหมา"}
-          {state?.fed_by && fedToday && (
-            <span className="text-xs block font-normal mt-0.5" style={{ color: "var(--beige)" }}>โดย {state.fed_by}</span>
-          )}
+          🎾 เล่นด้วย
+          <span className="text-xs block font-normal mt-0.5 opacity-75">
+            {todayCount(state?.play_at_1, state?.play_at_2 ?? null)}/2 แต้ม
+          </span>
         </button>
       </div>
     </div>

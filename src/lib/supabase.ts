@@ -21,4 +21,8 @@ export type GameState = {
   fed_by: string | null;
   watered_at: string | null;
   fed_at: string | null;
+  fed_at_1: string | null;
+  fed_at_2: string | null;
+  play_at_1: string | null;
+  play_at_2: string | null;
 };
