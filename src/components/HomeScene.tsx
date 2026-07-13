@@ -36,16 +36,13 @@ export default function HomeScene({ player }: { player: string }) {
   }, []);
 
   async function fetchState() {
-    const { data, error } = await getSupabase().from("game_state").select("*").eq("id", 1).single();
-    if (error) console.error("fetchState error:", error);
-    console.log("fetchState data:", data);
+    const { data } = await getSupabase().from("game_state").select("*").eq("id", 1).single();
     setState(data);
     setLoading(false);
   }
 
   async function doFeed() {
-    console.log("doFeed called, state:", state);
-    if (!state) { showToast("ยังโหลดข้อมูลไม่ครบ 🔄"); return; }
+    if (!state) return;
     const fedToday = todayCount(state.fed_at_1, state.fed_at_2);
     if (fedToday >= 2) { showToast("อิ่มแล้วสำหรับวันนี้ 🐾"); return; }
     const h = hoursSince(state.fed_at_1);
@@ -60,8 +57,7 @@ export default function HomeScene({ player }: { player: string }) {
   }
 
   async function doPlay() {
-    console.log("doPlay called, state:", state);
-    if (!state) { showToast("ยังโหลดข้อมูลไม่ครบ 🔄"); return; }
+    if (!state) return;
     triggerPlay();
     const playedToday = todayCount(state.play_at_1, state.play_at_2);
     if (playedToday >= 2) { showToast("เหนื่อยแล้ว เล่นพรุ่งนี้ต่อนะ 😴"); return; }
