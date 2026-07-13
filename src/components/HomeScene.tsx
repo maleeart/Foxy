@@ -165,7 +165,7 @@ export default function HomeScene({ player }: { player: string }) {
         >
           🦴 ให้อาหาร
           <span className="text-xs block font-normal mt-0.5 opacity-75">
-            {todayCount(state?.fed_at_1, state?.fed_at_2 ?? null)}/2 วันนี้
+            {todayCount(state?.fed_at_1 ?? null, state?.fed_at_2 ?? null)}/2 วันนี้
           </span>
         </button>
         <button
@@ -175,7 +175,7 @@ export default function HomeScene({ player }: { player: string }) {
         >
           🎾 เล่นด้วย
           <span className="text-xs block font-normal mt-0.5 opacity-75">
-            {todayCount(state?.play_at_1, state?.play_at_2 ?? null)}/2 แต้ม
+            {todayCount(state?.play_at_1 ?? null, state?.play_at_2 ?? null)}/2 แต้ม
           </span>
         </button>
       </div>
