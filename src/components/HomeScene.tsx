@@ -35,11 +35,8 @@ export default function HomeScene({ player }: { player: string }) {
     return () => { getSupabase().removeChannel(sub); };
   }, []);
 
-  const [fetchError, setFetchError] = useState("");
-
   async function fetchState() {
-    const { data, error } = await getSupabase().from("game_state").select("*").eq("id", 1).single();
-    if (error) setFetchError(error.message + " | code:" + error.code);
+    const { data } = await getSupabase().from("game_state").select("*").eq("id", 1).single();
     setState(data);
     setLoading(false);
   }
@@ -99,7 +96,6 @@ export default function HomeScene({ player }: { player: string }) {
     <div className="flex-1 flex flex-col items-center justify-center gap-3 px-6 text-center">
       <p className="text-2xl">⚠️</p>
       <p className="text-sm font-bold text-red-500">ไม่สามารถโหลดข้อมูลได้</p>
-      <p className="text-xs text-gray-400 break-all px-2">Error: {fetchError || "no error"}</p>
       <button onClick={fetchState} className="mt-2 px-4 py-2 rounded-xl text-white text-sm" style={{background:"var(--teal)"}}>ลองใหม่</button>
     </div>
   );
