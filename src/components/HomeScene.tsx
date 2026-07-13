@@ -36,13 +36,16 @@ export default function HomeScene({ player }: { player: string }) {
   }, []);
 
   async function fetchState() {
-    const { data } = await getSupabase().from("game_state").select("*").eq("id", 1).single();
+    const { data, error } = await getSupabase().from("game_state").select("*").eq("id", 1).single();
+    if (error) console.error("fetchState error:", error);
+    console.log("fetchState data:", data);
     setState(data);
     setLoading(false);
   }
 
   async function doFeed() {
-    if (!state) return;
+    console.log("doFeed called, state:", state);
+    if (!state) { showToast("ยังโหลดข้อมูลไม่ครบ 🔄"); return; }
     const fedToday = todayCount(state.fed_at_1, state.fed_at_2);
     if (fedToday >= 2) { showToast("อิ่มแล้วสำหรับวันนี้ 🐾"); return; }
     const h = hoursSince(state.fed_at_1);
@@ -57,7 +60,8 @@ export default function HomeScene({ player }: { player: string }) {
   }
 
   async function doPlay() {
-    if (!state) return;
+    console.log("doPlay called, state:", state);
+    if (!state) { showToast("ยังโหลดข้อมูลไม่ครบ 🔄"); return; }
     triggerPlay();
     const playedToday = todayCount(state.play_at_1, state.play_at_2);
     if (playedToday >= 2) { showToast("เหนื่อยแล้ว เล่นพรุ่งนี้ต่อนะ 😴"); return; }
@@ -95,8 +99,8 @@ export default function HomeScene({ player }: { player: string }) {
   return (
     <div className="flex flex-col relative select-none" style={{ flex: 1, minHeight: 0, overflow: "hidden", width: "100%" }}>
       {toast && (
-        <div className="toast-anim absolute top-4 left-1/2 z-20 bg-white rounded-full px-5 py-2.5 text-sm font-bold shadow-lg"
-          style={{ color: "var(--teal-dark)", border: "1.5px solid var(--teal-mid)", whiteSpace: "nowrap" }}>
+        <div className="toast-anim fixed top-6 left-1/2 z-50 bg-white rounded-full px-5 py-2.5 text-sm font-bold shadow-lg"
+          style={{ color: "var(--teal-dark)", border: "1.5px solid var(--teal-mid)", whiteSpace: "nowrap", transform: "translateX(-50%)" }}>
           {toast}
         </div>
       )}
