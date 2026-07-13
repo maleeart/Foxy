@@ -69,7 +69,7 @@ export default function HomeScene({ player }: { player: string }) {
 
       {/* Scene — portrait viewBox 390×560 */}
       <div className="relative" style={{ flex: 1, minHeight: 0 }}>
-        <svg viewBox="0 0 390 560" xmlns="http://www.w3.org/2000/svg" style={{ display: "block", width: "100%", height: "100%", position: "absolute", inset: 0 }}>
+        <svg viewBox="0 0 390 560" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style={{ display: "block", width: "100%", height: "100%", position: "absolute", inset: 0 }}>
           <defs>
             <linearGradient id="groundGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#7BC67E"/>
@@ -154,10 +154,10 @@ export default function HomeScene({ player }: { player: string }) {
           ))}
 
           {/* ===== DOGS (beagle left, golden right) ===== */}
-          <g className="dog-bob">
+          <g className="dog-bob" style={{ mixBlendMode: "multiply" }}>
             <image href="/beagle.png" x="248" y="380" width="90" height="90" preserveAspectRatio="xMidYMid meet"/>
           </g>
-          <g className="dog-bob" style={{ animationDelay: "0.4s" }}>
+          <g className="dog-bob" style={{ mixBlendMode: "multiply", animationDelay: "0.4s" }}>
             <image href="/golden.png" x="310" y="375" width="90" height="90" preserveAspectRatio="xMidYMid meet"/>
           </g>
           {!dogHappy && <text x="330" y="372" textAnchor="middle" fontSize="18">😢</text>}
