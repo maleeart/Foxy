@@ -64,6 +64,12 @@ body { background: var(--teal-light); }
   25%      { transform: translateY(-20px) rotate(-8deg); }
   75%      { transform: translateY(-20px) rotate(8deg); }
 }
+@keyframes floatUp {
+  0%   { opacity: 0; transform: translateY(0) scale(0.5); }
+  30%  { opacity: 1; transform: translateY(-20px) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-70px) scale(0.9); }
+}
+.float-up { animation: floatUp 1.2s ease-out forwards; }
 
 .cloud-1 { animation: cloudDrift 8s ease-in-out infinite; }
 .cloud-2 { animation: cloudDrift 11s ease-in-out infinite 2s; }

@@ -13,16 +13,20 @@ function todayCount(...timestamps: (string | null)[]) {
   return timestamps.filter(ts => ts?.slice(0, 10) === today).length;
 }
 
+// happiness ลดต่อเนื่อง: อิ่ม 12 ชม.แรก แล้วลด 20/วัน (~0.83/ชม) นับจาก feed ครั้งล่าสุด
 function calcHappiness(state: GameState) {
-  const decay = Math.max(0, Math.floor(hoursSince(state.fed_at_1) / 24) - 0) * 20;
-  return Math.max(0, Math.min(100, state.dog_happiness - decay));
+  const GRACE_H = 12, DECAY_PER_DAY = 20;
+  const hungryHours = Math.max(0, hoursSince(state.fed_at_1) - GRACE_H);
+  const decay = hungryHours * (DECAY_PER_DAY / 24);
+  return Math.round(Math.max(0, Math.min(100, state.dog_happiness - decay)));
 }
 
 export default function HomeScene({ player }: { player: string }) {
   const [state, setState] = useState<GameState | null>(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState("");
-  const [playing, setPlaying] = useState(false);
+  const [fx, setFx] = useState<"" | "feed" | "play">("");
+  const [, setTick] = useState(0);
 
   useEffect(() => {
     fetchState();
@@ -32,7 +36,8 @@ export default function HomeScene({ player }: { player: string }) {
         setState(p.new as GameState);
       })
       .subscribe();
-    return () => { getSupabase().removeChannel(sub); };
+    const timer = setInterval(() => setTick(t => t + 1), 60_000); // re-render ให้ happiness ลดเห็นทุกนาที
+    return () => { getSupabase().removeChannel(sub); clearInterval(timer); };
   }, []);
 
   async function fetchState() {
@@ -43,6 +48,7 @@ export default function HomeScene({ player }: { player: string }) {
 
   async function doFeed() {
     if (!state) return;
+    triggerFx("feed");
     const fedToday = todayCount(state.fed_at_1, state.fed_at_2);
     if (fedToday >= 2) { showToast("อิ่มแล้วสำหรับวันนี้ 🐾"); return; }
     const h = hoursSince(state.fed_at_1);
@@ -58,7 +64,7 @@ export default function HomeScene({ player }: { player: string }) {
 
   async function doPlay() {
     if (!state) return;
-    triggerPlay();
+    triggerFx("play");
     const playedToday = todayCount(state.play_at_1, state.play_at_2);
     if (playedToday >= 2) { showToast("เหนื่อยแล้ว เล่นพรุ่งนี้ต่อนะ 😴"); return; }
     const h = hoursSince(state.play_at_1);
@@ -72,9 +78,9 @@ export default function HomeScene({ player }: { player: string }) {
     showToast("🎾 หมาสนุกมาก! +10");
   }
 
-  function triggerPlay() {
-    setPlaying(true);
-    setTimeout(() => setPlaying(false), 1000);
+  function triggerFx(kind: "feed" | "play") {
+    setFx(kind);
+    setTimeout(() => setFx(""), 1200);
   }
 
   function showToast(msg: string) {
@@ -132,13 +138,22 @@ export default function HomeScene({ player }: { player: string }) {
           </g>
 
           {/* ===== DOGS (center, large) ===== */}
-          <g className={playing ? "dog-jump" : "dog-bob"} style={{ mixBlendMode: "multiply" }}>
+          <g className={fx ? "dog-jump" : "dog-bob"} style={{ mixBlendMode: "multiply" }}>
             <image href="/beagle.png" x="60" y="300" width="150" height="150" preserveAspectRatio="xMidYMid meet"/>
           </g>
-          <g className={playing ? "dog-jump" : "dog-bob"} style={{ mixBlendMode: "multiply", animationDelay: "0.4s" }}>
+          <g className={fx ? "dog-jump" : "dog-bob"} style={{ mixBlendMode: "multiply", animationDelay: "0.4s" }}>
             <image href="/golden.png" x="200" y="290" width="150" height="150" preserveAspectRatio="xMidYMid meet"/>
           </g>
-          {!dogHappy && <text x="195" y="285" textAnchor="middle" fontSize="22">😢</text>}
+          {/* floating fx emoji */}
+          {fx === "feed" && [130, 195, 260].map((x, i) => (
+            <text key={x} className="float-up" style={{ animationDelay: `${i * 0.15}s` }}
+              x={x} y="330" textAnchor="middle" fontSize="26">{i === 1 ? "🦴" : "❤️"}</text>
+          ))}
+          {fx === "play" && [130, 195, 260].map((x, i) => (
+            <text key={x} className="float-up" style={{ animationDelay: `${i * 0.15}s` }}
+              x={x} y="330" textAnchor="middle" fontSize="24">✨</text>
+          ))}
+          {!dogHappy && !fx && <text x="195" y="285" textAnchor="middle" fontSize="22">😢</text>}
           {/* happiness bar */}
           <rect x="95" y="462" width="200" height="14" rx="7" fill="white" opacity="0.7"/>
           <rect x="95" y="462" width={200 * happiness / 100} height="14" rx="7"
