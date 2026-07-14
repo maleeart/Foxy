@@ -128,14 +128,40 @@ export default function HomeScene({ player }: { player: string }) {
           {/* Background image */}
           <image href="/bg.png" x="0" y="0" width="390" height="560" preserveAspectRatio="xMidYMid slice"/>
 
-          {/* ===== TREE (decoration) ===== */}
-          <g transform="translate(55,318)" className="tree-sway" style={{ transformOrigin: "55px 318px" }}>
-            <rect x="-11" y="0" width="22" height="62" rx="9" fill="#9B7240"/>
-            <ellipse cx="0" cy="-24" rx="48" ry="44" fill="#43A047"/>
-            <ellipse cx="0" cy="-44" rx="38" ry="34" fill="#4CAF50"/>
-            <ellipse cx="0" cy="-60" rx="26" ry="24" fill="#66BB6A"/>
-            <ellipse cx="0" cy="-74" rx="16" ry="16" fill="#81C784"/>
+          {/* ===== TREE (decoration, back-left) ===== */}
+          <g className="tree-sway" style={{ transformOrigin: "48px 250px" }}>
+            <rect x="42" y="190" width="14" height="60" rx="7" fill="#9B7240"/>
+            <ellipse cx="48" cy="176" rx="36" ry="34" fill="#43A047"/>
+            <ellipse cx="48" cy="158" rx="28" ry="26" fill="#4CAF50"/>
+            <ellipse cx="48" cy="142" rx="20" ry="18" fill="#66BB6A"/>
+            <ellipse cx="48" cy="130" rx="12" ry="12" fill="#81C784"/>
           </g>
+
+          {/* ===== DOGHOUSE (back-right) ===== */}
+          <g>
+            <ellipse cx="330" cy="260" rx="52" ry="8" fill="#000" opacity="0.12"/>
+            {/* body */}
+            <rect x="292" y="200" width="76" height="60" rx="6" fill="#E08A5B"/>
+            <rect x="292" y="200" width="76" height="60" rx="6" fill="none" stroke="#B96A3F" strokeWidth="2.5"/>
+            {/* roof */}
+            <polygon points="330,168 282,208 378,208" fill="#C25B3A"/>
+            <polygon points="330,168 282,208 378,208" fill="none" stroke="#9E4529" strokeWidth="2.5"/>
+            {/* arched door */}
+            <path d="M314,260 L314,232 A16,16 0 0,1 346,232 L346,260 Z" fill="#7A4A32"/>
+            {/* bone sign */}
+            <text x="330" y="196" textAnchor="middle" fontSize="14">🦴</text>
+          </g>
+
+          {/* ===== TOYS (fill empty ground) ===== */}
+          {/* ball bottom-left */}
+          <g className="dog-bob" style={{ transformOrigin: "44px 508px", animationDelay: "0.8s" }}>
+            <circle cx="44" cy="506" r="17" fill="#FF6B6B"/>
+            <path d="M28,506 Q44,494 60,506" stroke="white" strokeWidth="2.5" fill="none"/>
+            <path d="M28,506 Q44,518 60,506" stroke="white" strokeWidth="2.5" fill="none"/>
+            <ellipse cx="44" cy="526" rx="15" ry="4" fill="#000" opacity="0.1"/>
+          </g>
+          {/* bone bottom-right */}
+          <text x="350" y="518" textAnchor="middle" fontSize="26" transform="rotate(20,350,518)">🦴</text>
 
           {/* ===== DOGS (center, large) ===== */}
           <g className={fx ? "dog-jump" : "dog-bob"} style={{ mixBlendMode: "multiply" }}>
